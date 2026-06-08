@@ -11,5 +11,18 @@ export async function invest(req, res) {
 }
 
 export async function listInvestments(req, res) {
-  res.json({ investments: await investmentService.listInvestments(req.user.id) });
+  const result = await investmentService.listInvestments(req.user.id);
+  res.json(result);
+}
+
+// Admin endpoint to manually trigger settlement
+export async function settleMaturedInvestments(req, res) {
+  const settled = await investmentService.settleMaturedInvestments();
+  res.json({
+    success: true,
+    data: {
+      settledCount: settled.length,
+      message: `Successfully settled ${settled.length} matured investments`
+    }
+  });
 }

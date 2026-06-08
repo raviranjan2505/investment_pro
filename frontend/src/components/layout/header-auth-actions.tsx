@@ -7,14 +7,15 @@ import { LogOut, User } from 'lucide-react';
 
 export function HeaderAuthActions() {
   const router = useRouter();
-  const { isAuthenticated, user, logout } = useAuthStore();
+  const { isAuthenticated, user, logout, isHydrated } = useAuthStore();
 
   const handleLogout = () => {
     logout();
     router.push('/');
   };
 
-  if (!isAuthenticated) {
+  // Prevent hydration mismatch by not rendering until store is hydrated
+  if (!isHydrated) {
     return (
       <div className="flex items-center gap-3">
         <Link
@@ -23,6 +24,24 @@ export function HeaderAuthActions() {
         >
           Login
         </Link>
+        <Link
+          href="/signup"
+          className="px-4 py-2 bg-blue-400 text-blue-900 font-semibold rounded-lg hover:bg-blue-300 transition"
+        >
+          Sign Up
+        </Link>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div className="flex items-center gap-3">
+        <Link
+  href="/login" className="px-4 py-2 !text-white hover:!text-blue-100 transition font-medium"
+>
+  Login
+</Link>
         <Link
           href="/signup"
           className="px-4 py-2 bg-blue-400 text-blue-900 font-semibold rounded-lg hover:bg-blue-300 transition"

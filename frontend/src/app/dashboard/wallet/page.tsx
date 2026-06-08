@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/useAuthStore';
 import { getWallet, getTransactions, type WalletResponse, type TransactionsResponse } from '@/lib/api/wallet';
-import { ArrowUpRight, ArrowDownLeft, Wallet, Loader } from 'lucide-react';
+import { ArrowUpRight, ArrowDownLeft, Wallet, Loader, Plus } from 'lucide-react';
+import AddFundsModal from '@/components/AddFundsModal';
 
 export default function WalletPage() {
   const router = useRouter();
@@ -13,6 +14,7 @@ export default function WalletPage() {
   const [transactions, setTransactions] = useState<TransactionsResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [isAddFundsOpen, setIsAddFundsOpen] = useState(false);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -154,6 +156,13 @@ export default function WalletPage() {
         {/* Action Buttons */}
         <div className="mt-8 flex gap-4 flex-wrap">
           <button
+            onClick={() => setIsAddFundsOpen(true)}
+            className="flex items-center gap-2 px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition"
+          >
+            <Plus className="w-5 h-5" />
+            Add Funds
+          </button>
+          <button
             onClick={() => router.push('/plans')}
             className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition"
           >
@@ -166,6 +175,13 @@ export default function WalletPage() {
             Withdraw
           </button>
         </div>
+
+        {/* Add Funds Modal */}
+        <AddFundsModal 
+          isOpen={isAddFundsOpen}
+          onClose={() => setIsAddFundsOpen(false)}
+          token={getToken()}
+        />
       </div>
     </div>
   );

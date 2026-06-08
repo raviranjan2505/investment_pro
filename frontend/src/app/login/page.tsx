@@ -9,6 +9,7 @@ import { AlertCircle, Lock, Mail } from 'lucide-react';
 export default function LoginPage() {
   const router = useRouter();
   const { login } = useAuthStore();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -29,94 +30,121 @@ export default function LoginPage() {
     }
   };
 
+  // reusable input style (FIXED)
+  const inputClass =
+    "w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500/50";
+
   return (
-    <div className="min-h-screen bg-linear-to-br from-blue-900 via-blue-800 to-blue-900 flex items-center justify-center px-4">
+    <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900">
+
+      {/* background glow */}
+      <div className="absolute inset-0 -z-10">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-blue-500/30 blur-[120px] rounded-full" />
+        <div className="absolute bottom-20 right-10 w-72 h-72 bg-cyan-500/30 blur-[120px] rounded-full" />
+      </div>
+
+      {/* CARD */}
       <div className="w-full max-w-md">
-        {/* Logo Section */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 bg-blue-400 rounded-lg mb-4">
-            <Lock className="w-8 h-8 text-blue-900" />
+
+        <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-3xl shadow-2xl p-8">
+
+          {/* HEADER */}
+          <div className="text-center mb-6">
+            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-400 shadow-lg shadow-blue-500/30 mb-4">
+              <Lock className="w-7 h-7 text-white" />
+            </div>
+
+            <h1 className="text-2xl font-bold text-white">
+              InvestPro
+            </h1>
+            <p className="text-blue-200 text-sm mt-1">
+              Smart Investment Platform
+            </p>
           </div>
-          <h1 className="text-3xl font-bold text-white mb-2">InvestPro</h1>
-          <p className="text-blue-200">Grow Your Wealth With Smart Investments</p>
-        </div>
 
-        {/* Login Card */}
-        <div className="bg-white rounded-2xl shadow-2xl p-8 mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Login to your account</h2>
-
+          {/* ERROR */}
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex gap-3">
-              <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
-              <p className="text-red-700">{error}</p>
+            <div className="mb-5 p-3 rounded-xl bg-red-500/10 border border-red-400/30 flex gap-2">
+              <AlertCircle className="w-5 h-5 text-red-400 mt-0.5" />
+              <p className="text-red-200 text-sm">{error}</p>
             </div>
           )}
 
+          {/* FORM */}
           <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Email Input */}
+
+            {/* EMAIL */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+              <label className="text-sm text-blue-200 mb-2 block">
+                Email Address
+              </label>
+
               <div className="relative">
-                <Mail className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+                <Mail className="absolute left-3 top-3 w-5 h-5 text-blue-300" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@example.com"
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  required
+                  className={inputClass}
                   disabled={isLoading}
+                  required
+                  autoComplete="email"
                 />
               </div>
             </div>
 
-            {/* Password Input */}
+            {/* PASSWORD */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
+              <label className="text-sm text-blue-200 mb-2 block">
+                Password
+              </label>
+
               <div className="relative">
-                <Lock className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+                <Lock className="absolute left-3 top-3 w-5 h-5 text-blue-300" />
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  required
+                  className={inputClass}
                   disabled={isLoading}
+                  required
+                  autoComplete="current-password"
                 />
               </div>
             </div>
 
-            {/* Remember & Forgot Password */}
-            <div className="flex justify-between items-center text-sm">
-              <label className="flex items-center">
-                <input type="checkbox" className="mr-2" />
-                <span className="text-gray-700">Remember me</span>
+            {/* OPTIONS */}
+            <div className="flex justify-between text-sm text-blue-200">
+              <label className="flex items-center gap-2">
+                <input type="checkbox" className="accent-blue-500" />
+                Remember me
               </label>
-              <Link href="/forgot-password" className="text-blue-600 hover:text-blue-700 font-medium">
+
+              <Link href="/forgot-password" className="text-blue-400 hover:text-blue-300">
                 Forgot Password?
               </Link>
             </div>
 
-            {/* Login Button */}
+            {/* BUTTON */}
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-blue-500 to-cyan-400 hover:opacity-90 transition disabled:opacity-50"
             >
               {isLoading ? 'Logging in...' : 'Login'}
             </button>
           </form>
-        </div>
 
-        {/* Sign Up Link */}
-        <div className="text-center">
-          <p className="text-blue-200">
-            Don't have an account?{' '}
+          {/* SIGNUP */}
+          <div className="mt-6 text-center text-sm text-blue-200">
+            Don’t have an account?{' '}
             <Link href="/signup" className="text-white font-semibold hover:underline">
-              Sign up here
+              Create account
             </Link>
-          </p>
+          </div>
+
         </div>
       </div>
     </div>

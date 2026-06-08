@@ -9,6 +9,7 @@ import { AlertCircle, Lock, Mail, User, Share2 } from 'lucide-react';
 export default function SignupPage() {
   const router = useRouter();
   const { register } = useAuthStore();
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -16,6 +17,7 @@ export default function SignupPage() {
     confirmPassword: '',
     referralCode: '',
   });
+
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -55,153 +57,148 @@ export default function SignupPage() {
     }
   };
 
+  // reusable input style
+  const inputClass =
+    "w-full pl-10 pr-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-blue-300 focus:ring-2 focus:ring-blue-500 outline-none";
+
   return (
-    <div className="min-h-screen bg-linear-to-br from-blue-900 via-blue-800 to-blue-900 flex items-center justify-center px-4 py-8">
+    <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900">
+
+      {/* glow background */}
+      <div className="absolute inset-0 -z-10">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-blue-500/30 blur-[120px] rounded-full" />
+        <div className="absolute bottom-20 right-10 w-72 h-72 bg-cyan-500/30 blur-[120px] rounded-full" />
+      </div>
+
+      {/* CARD */}
       <div className="w-full max-w-md">
-        {/* Logo Section */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 bg-blue-400 rounded-lg mb-4">
-            <User className="w-8 h-8 text-blue-900" />
+
+        <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-3xl shadow-2xl p-8">
+
+          {/* HEADER */}
+          <div className="text-center mb-6">
+            <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-white/10 border border-white/10">
+              <User className="w-7 h-7 text-blue-300" />
+            </div>
+
+            <h1 className="text-3xl font-bold text-white mt-3">
+              InvestPro
+            </h1>
+            <p className="text-blue-200 text-sm">
+              Start Your Investment Journey
+            </p>
           </div>
-          <h1 className="text-3xl font-bold text-white mb-2">InvestPro</h1>
-          <p className="text-blue-200">Start Your Investment Journey</p>
-        </div>
 
-        {/* Signup Card */}
-        <div className="bg-white rounded-2xl shadow-2xl p-8 mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Create your account</h2>
+          <h2 className="text-xl font-semibold text-white mb-6 text-center">
+            Create your account
+          </h2>
 
+          {/* ERROR */}
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex gap-3">
-              <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
-              <p className="text-red-700">{error}</p>
+            <div className="mb-5 p-3 rounded-xl bg-red-500/10 border border-red-500/20 flex gap-2">
+              <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
+              <p className="text-red-200 text-sm">{error}</p>
             </div>
           )}
 
+          {/* FORM */}
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Name Input */}
+
+            {/* NAME */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+              <label className="text-sm text-blue-200 mb-1 block">Full Name</label>
               <div className="relative">
-                <User className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+                <User className="absolute left-3 top-3 w-4 h-4 text-blue-300" />
                 <input
-                  type="text"
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  placeholder="John Doe"
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  required
-                  disabled={isLoading}
+                  className={inputClass}
+                  autoComplete="off"
                 />
               </div>
             </div>
 
-            {/* Email Input */}
+            {/* EMAIL */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+              <label className="text-sm text-blue-200 mb-1 block">Email</label>
               <div className="relative">
-                <Mail className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+                <Mail className="absolute left-3 top-3 w-4 h-4 text-blue-300" />
                 <input
-                  type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  placeholder="you@example.com"
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  required
-                  disabled={isLoading}
+                  className={inputClass}
+                  autoComplete="off"
                 />
               </div>
             </div>
 
-            {/* Password Input */}
+            {/* PASSWORD */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+              <label className="text-sm text-blue-200 mb-1 block">Password</label>
               <div className="relative">
-                <Lock className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+                <Lock className="absolute left-3 top-3 w-4 h-4 text-blue-300" />
                 <input
                   type="password"
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
-                  placeholder="Min 6 characters"
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  required
-                  disabled={isLoading}
+                  className={inputClass}
+                  autoComplete="new-password"
                 />
               </div>
             </div>
 
-            {/* Confirm Password */}
+            {/* CONFIRM PASSWORD */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+              <label className="text-sm text-blue-200 mb-1 block">Confirm Password</label>
               <div className="relative">
-                <Lock className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+                <Lock className="absolute left-3 top-3 w-4 h-4 text-blue-300" />
                 <input
                   type="password"
                   name="confirmPassword"
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  placeholder="Confirm your password"
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  required
-                  disabled={isLoading}
+                  className={inputClass}
+                  autoComplete="new-password"
                 />
               </div>
             </div>
 
-            {/* Referral Code (Optional) */}
+            {/* REFERRAL */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Referral Code (Optional)</label>
+              <label className="text-sm text-blue-200 mb-1 block">Referral Code</label>
               <div className="relative">
-                <Share2 className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+                <Share2 className="absolute left-3 top-3 w-4 h-4 text-blue-300" />
                 <input
-                  type="text"
                   name="referralCode"
                   value={formData.referralCode}
                   onChange={handleChange}
-                  placeholder="Enter referral code if you have one"
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  disabled={isLoading}
+                  className={inputClass}
+                  autoComplete="off"
                 />
               </div>
             </div>
 
-            {/* Terms Checkbox */}
-            <div className="flex items-start">
-              <input type="checkbox" className="mt-1 mr-2" required disabled={isLoading} />
-              <span className="text-sm text-gray-700">
-                I agree to the{' '}
-                <Link href="/terms" className="text-blue-600 hover:underline">
-                  Terms of Service
-                </Link>{' '}
-                and{' '}
-                <Link href="/privacy" className="text-blue-600 hover:underline">
-                  Privacy Policy
-                </Link>
-              </span>
-            </div>
-
-            {/* Sign Up Button */}
+            {/* BUTTON */}
             <button
-              type="submit"
               disabled={isLoading}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed mt-6"
+              className="w-full mt-6 py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-blue-500 to-cyan-400 hover:opacity-90 transition"
             >
               {isLoading ? 'Creating account...' : 'Sign Up'}
             </button>
-          </form>
-        </div>
 
-        {/* Login Link */}
-        <div className="text-center">
-          <p className="text-blue-200">
+          </form>
+
+          {/* LOGIN LINK */}
+          <p className="text-center text-blue-200 text-sm mt-6">
             Already have an account?{' '}
-            <Link href="/login" className="text-white font-semibold hover:underline">
-              Login here
+            <Link href="/login" className="text-white font-medium hover:underline">
+              Login
             </Link>
           </p>
+
         </div>
       </div>
     </div>

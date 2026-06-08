@@ -91,6 +91,29 @@ export async function createPayment({ userId, amount, payCurrency }) {
   });
 }
 
+export async function getPaymentStatus(userId, paymentId) {
+  const result = await db.query(
+    `SELECT 
+      cp.id,
+      cp.payment_id AS "paymentId",
+      cp.pay_address AS "payAddress",
+      cp.payment_url AS "paymentUrl",
+      cp.price_amount AS "priceAmount",
+      cp.price_currency AS "priceCurrency",
+      cp.pay_currency AS "payCurrency",
+      cp.status,
+      cp.created_at AS "createdAt",
+      cp.updated_at AS "updatedAt",
+      t.status AS "transactionStatus",
+      t.amount
+     FROM crypto_payments cp
+     LEFT JOIN transactions t ON t.id = cp.transaction_id
+     WHERE cp.user_id = $1 AND cp.payment_id = $2`,
+    [userId, paymentId]
+  );
+  return result.rows[0] || null;
+}
+
 export async function handleWebhook(_rawBody, headers, payload) {
   const signature = headers['x-nowpayments-sig'];
   if (!verifyNowPaymentsSignature(payload, signature)) {
@@ -137,5 +160,23 @@ export async function handleWebhook(_rawBody, headers, payload) {
     }
 
     return { duplicate: false, payment: updated };
+  });
+}
+
+export async function recordDirectDeposit({ userId, amount, description = 'Direct Deposit', metadata = {} }) {
+  return db.withTransaction(async (client) => {
+    const transaction = await transactionRepository.create(
+      {
+        userId,
+        type: 'deposit',
+        amount,
+        status: 'completed',
+        referenceType: 'direct_deposit',
+        metadata: { description, ...metadata }
+      },
+      client
+    );
+
+    return transaction;
   });
 }

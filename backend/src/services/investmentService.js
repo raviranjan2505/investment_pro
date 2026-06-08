@@ -65,12 +65,39 @@
         }
       }
 
-      return investment;
+      return {
+        id: investment.id,
+        planId: investment.plan_id,
+        planName: plan.name,
+        amount: Number(investment.amount),
+        returnPercentage: Number(investment.return_rate),
+        investedAt: investment.created_at,
+        maturityAt: investment.end_date,
+        status: investment.status,
+        returns: Number(investment.expected_return),
+        profit: Number(investment.expected_return),
+      };
     });
   }
 
   export async function listInvestments(userId) {
-    return investmentRepository.listByUser(userId);
+    const investments = await investmentRepository.listByUser(userId);
+    
+    return {
+      items: investments.map(inv => ({
+        id: inv.id,
+        planId: inv.plan_id,
+        planName: inv.plan_name,
+        amount: Number(inv.amount),
+        returnPercentage: Number(inv.return_rate),
+        investedAt: inv.created_at,
+        maturityAt: inv.end_date,
+        status: inv.status,
+        returns: Number(inv.expected_return),
+        profit: Number(inv.expected_return),
+      })),
+      total: investments.length,
+    };
   }
 
   export async function settleMaturedInvestments() {
@@ -79,22 +106,34 @@
       const settled = [];
 
       for (const investment of matured) {
-        const completed = await investmentRepository.markCompleted(investment.id, client);
-        if (!completed) continue;
+        try {
+          const completed = await investmentRepository.markCompleted(investment.id, client);
+          if (!completed) {
+            console.warn(`[Settlement] Failed to mark investment ${investment.id} as completed`);
+            continue;
+          }
 
-        await transactionRepository.create(
-          {
-            userId: investment.user_id,
-            type: 'return',
-            amount: investment.expected_return,
-            status: 'completed',
-            referenceType: 'investment',
-            referenceId: investment.id,
-            metadata: { settled_at: new Date().toISOString() }
-          },
-          client
-        );
-        settled.push(completed);
+          // Credit the return to user's wallet
+          const returnAmount = Number(investment.expected_return);
+          await transactionRepository.create(
+            {
+              userId: investment.user_id,
+              type: 'return',
+              amount: returnAmount,
+              status: 'completed',
+              referenceType: 'investment',
+              referenceId: investment.id,
+              metadata: { settled_at: new Date().toISOString() }
+            },
+            client
+          );
+          
+          settled.push(completed);
+          console.log(`[Settlement] ✅ Investment ${investment.id} settled: +₹${returnAmount} credited`);
+        } catch (error) {
+          console.error(`[Settlement] ❌ Error settling investment ${investment.id}:`, error);
+          throw error;
+        }
       }
 
       return settled;

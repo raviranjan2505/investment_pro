@@ -8,7 +8,7 @@ export interface Investment {
   returnPercentage: number;
   investedAt: string;
   maturityAt: string;
-  status: 'active' | 'matured' | 'withdrawn';
+  status: 'active' | 'completed' | 'cancelled';
   returns?: number;
   profit?: number;
 }

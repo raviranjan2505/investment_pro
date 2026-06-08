@@ -11,65 +11,82 @@ export function SiteHeader(): ReactElement {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-blue-200/30 bg-linear-to-r from-blue-900 to-blue-800 text-white">
-      <div className="px-4 md:px-8 py-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 font-bold text-2xl hover:text-blue-100 transition">
-            <BarChart3 className="w-8 h-8" />
-            {APP_NAME}
+    <header className="sticky top-0 z-50 w-full">
+
+  {/* FIXED SOLID BACKGROUND (no scroll change) */}
+  <div className="bg-slate-950 border-b border-white/10 shadow-lg">
+
+    <div className="px-4 md:px-8 py-4">
+
+      <div className="max-w-7xl mx-auto flex items-center justify-between">
+
+        {/* LOGO */}
+        <Link
+          href="/"
+          className="flex items-center gap-2 font-bold text-xl md:text-2xl text-white"
+        >
+          <div className="p-2 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400">
+            <BarChart3 className="w-5 h-5 text-white" />
+          </div>
+
+          <span className="tracking-wide  text-white">{APP_NAME}</span>
+        </Link>
+
+        {/* DESKTOP NAV */}
+        <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-blue-100">
+
+          <Link href="/plans" className="hover:text-white transition">
+            Plans
           </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-8">
-            <Link href="/plans" className="hover:text-blue-100 transition font-medium">
-              Plans
-            </Link>
-            <Link href="/dashboard" className="hover:text-blue-100 transition font-medium">
-              Dashboard
-            </Link>
-            <Link href="/#features" className="hover:text-blue-100 transition font-medium">
-              Features
-            </Link>
+          <Link href="/dashboard" className="hover:text-white transition">
+            Dashboard
+          </Link>
+
+          <Link href="/#features" className="hover:text-white transition">
+            Features
+          </Link>
+
+        </nav>
+
+        {/* AUTH */}
+        <div className="hidden md:block">
+          <HeaderAuthActions />
+        </div>
+
+        {/* MOBILE MENU BUTTON */}
+        <button
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          className="md:hidden p-2 rounded-lg bg-white/5 border border-white/10"
+        >
+          {isMenuOpen ? (
+            <X className="w-6 h-6 text-white" />
+          ) : (
+            <Menu className="w-6 h-6 text-white" />
+          )}
+        </button>
+
+      </div>
+
+      {/* MOBILE MENU */}
+      {isMenuOpen && (
+        <div className="md:hidden mt-4 pt-4 border-t border-white/10">
+
+          <nav className="flex flex-col gap-4 text-blue-100">
+            <Link href="/plans" onClick={() => setIsMenuOpen(false)}>Plans</Link>
+            <Link href="/dashboard" onClick={() => setIsMenuOpen(false)}>Dashboard</Link>
+            <Link href="/#features" onClick={() => setIsMenuOpen(false)}>Features</Link>
           </nav>
 
-          {/* Auth Actions */}
-          <div className="hidden md:block">
+          <div className="mt-4 pt-4 border-t border-white/10">
             <HeaderAuthActions />
           </div>
 
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden p-2 hover:bg-blue-700 rounded-lg transition"
-            aria-label="Toggle menu"
-          >
-            {isMenuOpen ? (
-              <X className="w-6 h-6" />
-            ) : (
-              <Menu className="w-6 h-6" />
-            )}
-          </button>
         </div>
+      )}
 
-        {/* Mobile Navigation */}
-        {isMenuOpen && (
-          <nav className="md:hidden mt-4 pb-4 space-y-3 border-t border-blue-700 pt-4">
-            <Link href="/plans" className="block hover:text-blue-100 transition font-medium">
-              Plans
-            </Link>
-            <Link href="/dashboard" className="block hover:text-blue-100 transition font-medium">
-              Dashboard
-            </Link>
-            <Link href="/#features" className="block hover:text-blue-100 transition font-medium">
-              Features
-            </Link>
-            <div className="pt-3 border-t border-blue-700">
-              <HeaderAuthActions />
-            </div>
-          </nav>
-        )}
-      </div>
-    </header>
+    </div>
+  </div>
+</header>
   );
 }

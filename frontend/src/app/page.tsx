@@ -1,46 +1,82 @@
 'use client';
-
-import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import type { ReactElement } from 'react';
 import { TrendingUp, Lock, Zap, Users, ArrowRight, CheckCircle } from 'lucide-react';
+import InvestmentPlanCard from '@/components/investment/InvestmentPlanCard';
+import { getPlans, type InvestmentPlan } from '@/lib/api/plans';
 
 export default function HomePage(): ReactElement {
+ const [plans, setPlans] = useState<InvestmentPlan[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPlans = async () => {
+      try {
+        const data = await getPlans();
+        setPlans(data.items);
+      } catch (err) {
+        console.error('Failed to load plans', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPlans();
+  }, []);
+
+
   return (
-    <main className="bg-linear-to-br from-blue-900 via-blue-800 to-blue-900">
-      {/* Hero Section */}
-      <section className="min-h-screen flex items-center justify-center px-4 py-20">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          {/* Left Column */}
-          <div className="text-white space-y-8">
-            <div>
-              <div className="inline-block mb-4 px-4 py-2 bg-blue-400 bg-opacity-20 rounded-full">
-                <span className="text-blue-200 text-sm font-semibold">Smart Investment Platform</span>
-              </div>
-              <h1 className="text-5xl md:text-6xl font-bold leading-tight mb-4">
-                Grow Your Wealth With Smart Investments
-              </h1>
-              <p className="text-xl text-blue-100 leading-relaxed">
-                Invest in high-yield plans, track your returns in real-time, and build your financial future with confidence.
-              </p>
+    <main className="relative min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 text-white overflow-hidden">
+
+      {/* Background Glow */}
+      <div className="absolute inset-0 -z-10">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-blue-500/30 rounded-full blur-[120px]" />
+        <div className="absolute bottom-20 right-10 w-72 h-72 bg-indigo-500/30 rounded-full blur-[120px]" />
+      </div>
+
+      {/* HERO SECTION */}
+      <section className="min-h-screen flex items-center justify-center px-6 py-20">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-14 items-center">
+
+          {/* LEFT */}
+          <div className="space-y-8">
+
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/10">
+              <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+              <span className="text-sm text-blue-100 font-medium">
+                Smart Investment Platform
+              </span>
             </div>
+
+            <h1 className="text-5xl md:text-6xl font-bold leading-tight">
+              Grow Your Wealth With{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">
+                Smart Investments
+              </span>
+            </h1>
+
+            <p className="text-lg text-blue-100 leading-relaxed max-w-xl">
+              Invest in high-yield plans, track your returns in real-time, and build your financial future with confidence.
+            </p>
 
             <div className="flex gap-4">
               <Link
                 href="/signup"
-                className="px-8 py-3 bg-blue-400 text-blue-900 font-bold rounded-lg hover:bg-blue-300 transition inline-flex items-center gap-2"
+                className="px-8 py-3 rounded-xl bg-blue-500 hover:bg-blue-400 transition font-semibold flex items-center gap-2 shadow-lg shadow-blue-500/30"
               >
-                Get Started <ArrowRight className="w-5 h-5" />
+                Get Started <ArrowRight size={18} />
               </Link>
+
               <Link
                 href="/login"
-                className="px-8 py-3 bg-transparent border-2 border-blue-300 text-blue-100 font-bold rounded-lg hover:bg-blue-300 hover:text-blue-900 transition"
+                className="px-8 py-3 rounded-xl border border-white/20 hover:bg-white/10 transition font-semibold"
               >
                 Sign In
               </Link>
             </div>
 
-            <div className="grid grid-cols-3 gap-6 pt-8 border-t border-blue-400 border-opacity-30">
+            <div className="grid grid-cols-3 gap-6 pt-8 border-t border-white/10">
               <div>
                 <p className="text-3xl font-bold">₹50K+</p>
                 <p className="text-blue-200 text-sm">Active Investors</p>
@@ -56,180 +92,153 @@ export default function HomePage(): ReactElement {
             </div>
           </div>
 
-          {/* Right Column - Visual */}
+          {/* RIGHT */}
           <div className="relative">
-            <div className="relative h-96 md:h-full">
-              {/* Decorative elements */}
-              <div className="absolute inset-0 bg-linear-to-br from-blue-400 to-blue-600 rounded-3xl opacity-20 blur-3xl"></div>
-              <div className="absolute inset-4 bg-white rounded-2xl opacity-10 backdrop-blur-sm"></div>
-              
-              {/* Investment cards visualization */}
-              <div className="absolute top-8 left-4 bg-white bg-opacity-10 backdrop-blur-md border border-white border-opacity-20 rounded-xl p-4 w-64 transform -rotate-3">
-                <p className="text-white text-sm font-semibold mb-2">Gold Plan</p>
-                <p className="text-blue-200 text-xs mb-3">₹15,000 - ₹19,999</p>
-                <div className="flex justify-between items-center">
-                  <span className="text-white font-bold">18% Returns</span>
-                  <span className="text-blue-300 text-xs">60 Days</span>
+            <div className="relative h-[420px]">
+
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 rounded-3xl blur-2xl" />
+
+              <div className="relative bg-white/5 border border-white/10 backdrop-blur-xl rounded-3xl p-6 shadow-2xl">
+
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-blue-200 text-sm">Live Investment Plans</h3>
+                  <TrendingUp className="text-green-400" />
                 </div>
-              </div>
 
-              <div className="absolute bottom-12 right-4 bg-white bg-opacity-10 backdrop-blur-md border border-white border-opacity-20 rounded-xl p-4 w-64 transform rotate-2">
-                <p className="text-white text-sm font-semibold mb-2">Platinum Plan</p>
-                <p className="text-blue-200 text-xs mb-3">₹20,000+</p>
-                <div className="flex justify-between items-center">
-                  <span className="text-white font-bold">25% Returns</span>
-                  <span className="text-blue-300 text-xs">90 Days</span>
+                <div className="space-y-4">
+                  <div className="p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition">
+                    <p className="font-semibold">Gold Plan</p>
+                    <p className="text-sm text-blue-200">₹15,000 - ₹19,999</p>
+                    <p className="text-green-400 font-bold mt-1">18% Returns</p>
+                  </div>
+
+                  <div className="p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition">
+                    <p className="font-semibold">Platinum Plan</p>
+                    <p className="text-sm text-blue-200">₹20,000+</p>
+                    <p className="text-green-400 font-bold mt-1">25% Returns</p>
+                  </div>
                 </div>
-              </div>
 
-              <div className="absolute top-1/2 right-8 bg-linear-to-br from-green-400 to-blue-500 rounded-full w-24 h-24 flex items-center justify-center shadow-xl">
-                <TrendingUp className="w-12 h-12 text-white" />
               </div>
             </div>
           </div>
+
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-20 px-4 bg-black bg-opacity-20">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-4">Why Choose InvestPro?</h2>
-            <p className="text-xl text-blue-200">Everything you need to invest smart and grow wealth</p>
+      {/* FEATURES SECTION */}
+      <section className="py-24 px-6 bg-black/20 backdrop-blur-xl">
+        <div className="max-w-6xl mx-auto text-center mb-16">
+          <h2 className="text-4xl font-bold">Why Choose InvestPro?</h2>
+          <p className="text-blue-200 mt-2">Everything you need to invest smart and grow wealth</p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+
+          <div className="bg-white/5 border border-white/10 rounded-2xl p-8 hover:bg-white/10 transition">
+            <Lock className="w-6 h-6 text-blue-400 mb-4" />
+            <h3 className="text-xl font-semibold mb-2">Secure & Safe</h3>
+            <p className="text-blue-200 text-sm">
+              Your investments are protected with industry-grade encryption and compliance systems.
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Feature 1 */}
-            <div className="bg-white bg-opacity-10 backdrop-blur-md border border-white border-opacity-20 rounded-xl p-8 hover:bg-opacity-20 transition">
-              <div className="bg-blue-400 bg-opacity-20 p-3 rounded-lg w-fit mb-4">
-                <Lock className="w-6 h-6 text-blue-300" />
-              </div>
-              <h3 className="text-xl font-bold text-white mb-3">Secure & Safe</h3>
-              <p className="text-blue-200">Your investments are protected with industry-leading security measures and compliance standards.</p>
-            </div>
-
-            {/* Feature 2 */}
-            <div className="bg-white bg-opacity-10 backdrop-blur-md border border-white border-opacity-20 rounded-xl p-8 hover:bg-opacity-20 transition">
-              <div className="bg-blue-400 bg-opacity-20 p-3 rounded-lg w-fit mb-4">
-                <Zap className="w-6 h-6 text-blue-300" />
-              </div>
-              <h3 className="text-xl font-bold text-white mb-3">High Returns</h3>
-              <p className="text-blue-200">Earn competitive returns ranging from 8% to 25% depending on your investment plan.</p>
-            </div>
-
-            {/* Feature 3 */}
-            <div className="bg-white bg-opacity-10 backdrop-blur-md border border-white border-opacity-20 rounded-xl p-8 hover:bg-opacity-20 transition">
-              <div className="bg-blue-400 bg-opacity-20 p-3 rounded-lg w-fit mb-4">
-                <Users className="w-6 h-6 text-blue-300" />
-              </div>
-              <h3 className="text-xl font-bold text-white mb-3">Community</h3>
-              <p className="text-blue-200">Join thousands of investors earning passive income and building wealth together.</p>
-            </div>
+          <div className="bg-white/5 border border-white/10 rounded-2xl p-8 hover:bg-white/10 transition">
+            <Zap className="w-6 h-6 text-blue-400 mb-4" />
+            <h3 className="text-xl font-semibold mb-2">High Returns</h3>
+            <p className="text-blue-200 text-sm">
+              Earn competitive returns ranging from 8% to 25% based on your plan.
+            </p>
           </div>
+
+          <div className="bg-white/5 border border-white/10 rounded-2xl p-8 hover:bg-white/10 transition">
+            <Users className="w-6 h-6 text-blue-400 mb-4" />
+            <h3 className="text-xl font-semibold mb-2">Community</h3>
+            <p className="text-blue-200 text-sm">
+              Join thousands of investors building passive income together.
+            </p>
+          </div>
+
         </div>
       </section>
 
-      {/* Investment Plans Preview */}
-      <section className="py-20 px-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-4">Investment Plans</h2>
-            <p className="text-xl text-blue-200">Choose the plan that fits your investment goals</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {/* Basic Plan */}
-            <div className="bg-white bg-opacity-5 border border-white border-opacity-10 rounded-xl p-6 hover:bg-opacity-10 transition transform hover:scale-105">
-              <h3 className="text-xl font-bold text-white mb-2">Basic Plan</h3>
-              <p className="text-blue-300 text-sm mb-4">Min: ₹100 | Max: ₹999</p>
-              <p className="text-3xl font-bold text-white mb-2">8%</p>
-              <p className="text-blue-200 text-sm mb-6">Returns</p>
-              <ul className="space-y-2 mb-6">
-                <li className="flex items-center gap-2 text-blue-100 text-sm">
-                  <CheckCircle className="w-4 h-4 text-green-400" /> 30 Days
-                </li>
-              </ul>
-              <Link href="/signup" className="w-full bg-blue-600 text-white font-semibold py-2 rounded-lg hover:bg-blue-700 transition text-center">
-                Invest Now
-              </Link>
-            </div>
-
-            {/* Silver Plan */}
-            <div className="bg-white bg-opacity-5 border border-white border-opacity-10 rounded-xl p-6 hover:bg-opacity-10 transition transform hover:scale-105">
-              <h3 className="text-xl font-bold text-white mb-2">Silver Plan</h3>
-              <p className="text-blue-300 text-sm mb-4">Min: ₹1,000 | Max: ₹4,999</p>
-              <p className="text-3xl font-bold text-white mb-2">12%</p>
-              <p className="text-blue-200 text-sm mb-6">Returns</p>
-              <ul className="space-y-2 mb-6">
-                <li className="flex items-center gap-2 text-blue-100 text-sm">
-                  <CheckCircle className="w-4 h-4 text-green-400" /> 45 Days
-                </li>
-              </ul>
-              <Link href="/signup" className="w-full bg-blue-600 text-white font-semibold py-2 rounded-lg hover:bg-blue-700 transition text-center">
-                Invest Now
-              </Link>
-            </div>
-
-            {/* Gold Plan */}
-            <div className="bg-linear-to-br from-yellow-400 to-yellow-600 rounded-xl p-6 transform scale-105 shadow-2xl">
-              <div className="mb-4">
-                <span className="bg-white bg-opacity-20 text-white text-xs font-bold px-3 py-1 rounded-full">POPULAR</span>
-              </div>
-              <h3 className="text-xl font-bold text-white mb-2">Gold Plan</h3>
-              <p className="text-yellow-100 text-sm mb-4">Min: ₹5,000 | Max: ₹19,999</p>
-              <p className="text-4xl font-bold text-white mb-2">18%</p>
-              <p className="text-yellow-100 text-sm mb-6">Returns</p>
-              <ul className="space-y-2 mb-6">
-                <li className="flex items-center gap-2 text-white text-sm">
-                  <CheckCircle className="w-4 h-4" /> 60 Days
-                </li>
-              </ul>
-              <Link href="/signup" className="w-full bg-white text-yellow-600 font-semibold py-2 rounded-lg hover:bg-yellow-50 transition text-center">
-                Invest Now
-              </Link>
-            </div>
-
-            {/* Platinum Plan */}
-            <div className="bg-white bg-opacity-5 border border-white border-opacity-10 rounded-xl p-6 hover:bg-opacity-10 transition transform hover:scale-105">
-              <h3 className="text-xl font-bold text-white mb-2">Platinum Plan</h3>
-              <p className="text-blue-300 text-sm mb-4">Min: ₹20,000+</p>
-              <p className="text-3xl font-bold text-white mb-2">25%</p>
-              <p className="text-blue-200 text-sm mb-6">Returns</p>
-              <ul className="space-y-2 mb-6">
-                <li className="flex items-center gap-2 text-blue-100 text-sm">
-                  <CheckCircle className="w-4 h-4 text-green-400" /> 90 Days
-                </li>
-              </ul>
-              <Link href="/signup" className="w-full bg-blue-600 text-white font-semibold py-2 rounded-lg hover:bg-blue-700 transition text-center">
-                Invest Now
-              </Link>
-            </div>
-          </div>
-
-          <div className="text-center">
-            <Link
-              href="/plans"
-              className="inline-flex items-center gap-2 px-8 py-3 bg-blue-400 text-blue-900 font-bold rounded-lg hover:bg-blue-300 transition"
-            >
-              View All Plans <ArrowRight className="w-5 h-5" />
-            </Link>
-          </div>
+{/* INVESTMENT PLANS */}
+ {/* INVESTMENT PLANS SECTION */}
+      <section className="py-24 px-6">
+        <div className="max-w-6xl mx-auto text-center mb-16">
+          <h2 className="text-4xl font-bold">Investment Plans</h2>
+          <p className="text-blue-200 mt-2">
+            Choose the plan that fits your financial goals
+          </p>
         </div>
+
+        {loading ? (
+          <div className="text-center text-blue-200">Loading plans...</div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
+            {plans.map((plan, index) => (
+              <InvestmentPlanCard
+                key={plan.id}
+                plan={plan}
+                index={index}
+                isAuthenticated={false} // home page = public
+              />
+            ))}
+          </div>
+        )}
       </section>
 
-      {/* CTA Section */}
-      <section className="py-16 px-4 bg-linear-to-r from-blue-600 to-blue-800">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl font-bold text-white mb-6">Ready to Start Investing?</h2>
-          <p className="text-xl text-blue-100 mb-8">Join thousands of investors earning passive income today</p>
-          <Link
-            href="/signup"
-            className="inline-flex items-center gap-2 px-10 py-4 bg-white text-blue-600 font-bold rounded-lg hover:bg-gray-100 transition text-lg"
-          >
-            Create Account Now <ArrowRight className="w-6 h-6" />
-          </Link>
-        </div>
-      </section>
+{/* CTA SECTION */}
+<section className="relative py-24 px-6 overflow-hidden">
+
+  {/* background glow */}
+  <div className="absolute inset-0">
+    <div className="absolute top-10 left-10 w-72 h-72 bg-blue-500/30 rounded-full blur-[120px]" />
+    <div className="absolute bottom-10 right-10 w-72 h-72 bg-cyan-400/30 rounded-full blur-[120px]" />
+  </div>
+
+  <div className="relative max-w-4xl mx-auto text-center">
+
+    {/* glass container */}
+    <div className="bg-white/5 border border-white/10 backdrop-blur-xl rounded-3xl p-12 shadow-2xl">
+
+      {/* badge */}
+      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-400/20 mb-6">
+        <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+        <span className="text-sm text-green-200 font-medium">
+          Trusted by 50,000+ Investors
+        </span>
+      </div>
+
+      <h2 className="text-4xl md:text-5xl font-bold leading-tight">
+        Ready to Start{" "}
+        <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">
+          Investing?
+        </span>
+      </h2>
+
+      <p className="text-blue-200 mt-4 mb-10 text-lg">
+        Join thousands of investors growing their wealth every day with smart investment plans.
+      </p>
+
+      {/* CTA BUTTON */}
+    <Link
+  href="/signup"
+  className="group relative inline-flex items-center gap-2 px-10 py-4 rounded-xl font-bold !text-blue-900 bg-white hover:bg-blue-50 transition shadow-lg shadow-blue-500/20"
+>
+  <span>Create Account</span>
+  <ArrowRight className="group-hover:translate-x-1 transition" />
+</Link>
+
+      {/* small trust line */}
+      <p className="text-xs text-blue-300 mt-6">
+        🔒 Secure • Fast Withdrawal • Transparent Returns
+      </p>
+
+    </div>
+  </div>
+</section>
+
     </main>
   );
 }

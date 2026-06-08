@@ -16,4 +16,13 @@ router.post('/:plan', requireAuth, sensitiveLimiter, (req, res, next) => {
 
 router.get('/', requireAuth, asyncHandler(investmentController.listInvestments));
 
+// Admin endpoint to manually settle matured investments (for testing and manual correction)
+router.post('/admin/settle-matured', requireAuth, asyncHandler(async (req, res, next) => {
+  // Check if user is admin
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ error: { code: 'FORBIDDEN', message: 'Admin access required' } });
+  }
+  return next();
+}), asyncHandler(investmentController.settleMaturedInvestments));
+
 export default router;
